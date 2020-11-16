@@ -138,3 +138,20 @@ for each_url in course_links_file:
                             course_data['Duration_Time'] = conv_duration_list[1]
                             print('DURATION/DURATION-TIME',
                                   str(course_data['Duration']) + ' / ' + course_data['Duration_Time'])
+
+    #ATAR
+    atar_tag = soup.find('h4', class_='fusion-responsive-typography-calculated',
+                         text=re.compile(r'MINIMUM SELECTION THRESHOLD \(OP/RANK\)', re.IGNORECASE))
+    if atar_tag:
+        atar_p = atar_tag.find_next_sibling('p')
+        if atar_p:
+            atar = re.findall(r'\d+', atar_p.get_text())
+            if atar is not None:
+                if len(atar) == 2:
+                    course_data['Prerequisite_1_grade'] = atar[1]
+                    course_data['Prerequisite_1'] = 'year 12'
+                else:
+                    course_data['Prerequisite_1_grade'] = 'N/A'
+                    course_data['Prerequisite_1'] = 'year 12'
+                print('ATAR: ', course_data['Prerequisite_1_grade'])
+
