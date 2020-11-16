@@ -155,3 +155,15 @@ for each_url in course_links_file:
                     course_data['Prerequisite_1'] = 'year 12'
                 print('ATAR: ', course_data['Prerequisite_1_grade'])
 
+    # CAREER OUTCOMES
+    career_outcome_title = soup.find('span', class_='fusion-toggle-heading', text=re.compile('Career Outcomes', re.IGNORECASE))
+    course_data['Career_Outcomes'] = ''
+    if career_outcome_title:
+        title_parent = career_outcome_title.find_parent('div', class_='panel-heading')
+        if title_parent:
+            career_container = title_parent.find_next_sibling('div')
+            if career_container:
+                career_p = career_container.find('p')
+                if career_p:
+                    course_data['Career_Outcomes'] = career_p.get_text()
+                    print('CAREER OUTCOMES: ', course_data['Career_Outcomes'])
