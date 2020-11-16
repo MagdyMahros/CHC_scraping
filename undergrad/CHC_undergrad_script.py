@@ -167,3 +167,33 @@ for each_url in course_links_file:
                 if career_p:
                     course_data['Career_Outcomes'] = career_p.get_text()
                     print('CAREER OUTCOMES: ', course_data['Career_Outcomes'])
+
+    # DELIVERY MODE
+    mode_tag = soup.find('h4', class_='fusion-responsive-typography-calculated',
+                         text=re.compile('MODE', re.IGNORECASE))
+    if mode_tag:
+        mode_p = mode_tag.find_next_sibling('p')
+        if mode_p:
+            mode_text = mode_p.get_text().lower()
+            if 'on campus' in mode_text:
+                course_data['Face_to_Face'] = 'yes'
+                course_data['Offline'] = 'yes'
+            else:
+                course_data['Face_to_Face'] = 'no'
+                course_data['Offline'] = 'no'
+            if 'online' in mode_text:
+                course_data['Online'] = 'yes'
+            else:
+                course_data['Online'] = 'no'
+            if 'external' in mode_text:
+                course_data['Distance'] = 'yes'
+            else:
+                course_data['Distance'] = 'no'
+            if 'mixed' in mode_text:
+                course_data['Blended'] = 'yes'
+            else:
+                course_data['Blended'] = 'no'
+        print('DELIVERY: online: ' + course_data['Online'] + ' offline: ' + course_data['Offline'] + ' face to face: ' +
+              course_data['Face_to_Face'] + ' blended: ' + course_data['Blended'] + ' distance: ' +
+              course_data['Distance'])
+
