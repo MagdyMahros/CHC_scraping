@@ -12,10 +12,6 @@ import time
 from pathlib import Path
 from selenium import webdriver
 import bs4 as bs4
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import os
 import copy
 from CustomMethods import TemplateData
@@ -40,7 +36,7 @@ csv_file = csv_file_path.__str__() + '/CHC_undergrad.csv'
 course_data = {'Level_Code': '', 'University': 'Swinburne University of Technology', 'City': '', 'Country': 'Australia',
                'Course': '', 'Int_Fees': '', 'Local_Fees': '', 'Currency': 'AUD', 'Currency_Time': 'year',
                'Duration': '', 'Duration_Time': '', 'Full_Time': '', 'Part_Time': '', 'Prerequisite_1': '',
-               'Prerequisite_2': 'IELTS', 'Prerequisite_3': '', 'Prerequisite_1_grade': '', 'Prerequisite_2_grade': '6.0',
+               'Prerequisite_2': 'IELTS', 'Prerequisite_3': '', 'Prerequisite_1_grade': '', 'Prerequisite_2_grade': '7.5',
                'Prerequisite_3_grade': '', 'Website': '', 'Course_Lang': '', 'Availability': '', 'Description': '',
                'Career_Outcomes': '', 'Online': '', 'Offline': '', 'Distance': '', 'Face_to_Face': '',
                'Blended': '', 'Remarks': ''}
@@ -112,4 +108,33 @@ for each_url in course_links_file:
             course_data['Description'] = description_list
             print('COURSE DESCRIPTION: ', description_list)
 
-
+    # DURATION
+    duration_list = soup.find('ul', class_='duration-list')
+    if duration_list:
+        duration_li = duration_list.find_all('li')
+        if duration_li:
+            for index, li in enumerate(duration_li):
+                if index == 0:
+                    duration = li.find('span')
+                    if duration:
+                        duration_text = duration.get_text().lower()
+                        if 'full-time' in duration_text:
+                            course_data['Full_Time'] = 'yes'
+                        else:
+                            course_data['Full_Time'] = 'no'
+                        if 'part-time' in duration_text:
+                            course_data['Part_Time'] = 'yes'
+                        else:
+                            course_data['Part_Time'] = 'no'
+                        print('FULL-TIME/PART-TIME: ', course_data['Full_Time'] + ' / ' + course_data['Part_Time'])
+                        converted_dura = dura.convert_duration(duration_text)
+                        if converted_dura is not None:
+                            conv_duration_list = list(converted_dura)
+                            if conv_duration_list[0] == 1 and 'Years' in conv_duration_list[1]:
+                                conv_duration_list[1] = 'Year'
+                            elif conv_duration_list[0] == 1 and 'Months' in conv_duration_list[1]:
+                                conv_duration_list[1] = 'Month'
+                            course_data['Duration'] = conv_duration_list[0]
+                            course_data['Duration_Time'] = conv_duration_list[1]
+                            print('DURATION/DURATION-TIME',
+                                  str(course_data['Duration']) + ' / ' + course_data['Duration_Time'])
