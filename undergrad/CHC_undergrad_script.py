@@ -100,3 +100,16 @@ for each_url in course_links_file:
             course_data['Course_Lang'] = 'English'
     print('COURSE LANGUAGE: ', course_data['Course_Lang'])
 
+    # COURSE DESCRIPTION
+    description_tag = soup.find('h3', class_='proxima-heading fusion-responsive-typography-calculated')
+    if description_tag:
+        description_list = []
+        description_p_list = description_tag.find_next_siblings('p')
+        if description_p_list:
+            for p in description_p_list:
+                description_list.append(p.get_text().strip())
+            description_list = ' '.join(description_list)
+            course_data['Description'] = description_list
+            print('COURSE DESCRIPTION: ', description_list)
+
+
