@@ -30,6 +30,7 @@ for element in result_elements:
     list_of_links.append(link)
 
 
+
 # SAVE TO FILE
 course_links_file_path = os.getcwd().replace('\\', '/') + '/CHC_undergrad_links.txt'
 course_links_file = open(course_links_file_path, 'w')
